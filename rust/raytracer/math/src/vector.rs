@@ -1,5 +1,6 @@
 use std::ops;
 use std::fmt;
+use rand::Rng;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Vec3 {
@@ -12,6 +13,38 @@ impl Vec3 {
     pub fn new(x: f64, y: f64, z: f64) -> Vec3 {
         Vec3 {
             x, y, z
+        }
+    }
+
+    // Each axis from 0 to 1
+    pub fn random() -> Vec3 {
+        let v = Vec3::new(
+            rand::thread_rng().gen_range(0.0..1.0),
+            rand::thread_rng().gen_range(0.0..1.0),
+            rand::thread_rng().gen_range(0.0..1.0)
+        );
+        println!("{:?}", v);
+        v
+    }
+
+    pub fn random_range(min: f64, max: f64) -> Vec3 {
+        let v = Vec3::new(
+            rand::thread_rng().gen_range(min..max),
+            rand::thread_rng().gen_range(min..max),
+            rand::thread_rng().gen_range(min..max)
+        );
+        println!("{:?}", v);
+        v
+    }
+
+    pub fn random_in_unit_sphere() -> Vec3 {
+        loop {
+            let p = Vec3::random_range(-1.0, 1.0);
+            if p.length_squared() >= 1.0 {
+                continue;
+            }
+            println!("{:?}", p);
+            return p;
         }
     }
 

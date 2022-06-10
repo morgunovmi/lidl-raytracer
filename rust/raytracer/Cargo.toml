@@ -7,3 +7,5 @@ edition = "2021"
 
 [dependencies]
 math = { path = "math" }
+num = "0.4.0"
+rand = "0.8.5"
