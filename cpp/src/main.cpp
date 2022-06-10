@@ -13,8 +13,9 @@
 #include "materials/material.h"
 #include "materials/lambertian.h"
 #include "materials/metal.h"
+#include "materials/dielectric.h"
 
-slr::color ray_color(const ray& r, const hittable& world, int depth) {
+color ray_color(const ray& r, const hittable& world, int depth) {
     hit_info info{};
 
     if (depth <= 0) {
@@ -23,16 +24,16 @@ slr::color ray_color(const ray& r, const hittable& world, int depth) {
 
     if (world.hit(r, 0.001, inf, info)) {
         ray scattered;
-        slr::color attenuation;
+        color attenuation;
         if (info.mat_ptr->scatter(r, info, attenuation, scattered)) {
             return attenuation * ray_color(scattered, world, depth - 1);
         }
-        return slr::color{0, 0, 0};
+        return color{0, 0, 0};
     }
 
     auto unit_direction = r.direction().normalize();
     auto t = 0.5 * (unit_direction.y + 1.0);
-    return (1 - t) * slr::color{1.0, 1.0, 1.0} + t * slr::color{0.5, 0.7, 1.0};
+    return (1 - t) * color{1.0, 1.0, 1.0} + t * color{0.5, 0.7, 1.0};
 }
 
 int main() {
@@ -49,18 +50,20 @@ int main() {
 
     hittable_list world{};
 
-    const auto material_ground = std::make_shared<lambertian>(slr::color{0.8, 0.8, 0.0});
-    const auto material_center = std::make_shared<lambertian>(slr::color{0.7, 0.3, 0.3});
-    const auto material_left = std::make_shared<metal>(slr::color{0.8, 0.8, 0.8}, 0.3);
-    const auto material_right = std::make_shared<metal>(slr::color{0.8, 0.6, 0.2}, 1.0);
+    const auto material_ground = std::make_shared<lambertian>(color{0.8, 0.8, 0.0});
+    const auto material_left = std::make_shared<dielectric>(1.5);
+    const auto material_center = std::make_shared<lambertian>(color{0.1, 0.1, 0.8});
+    const auto material_right = std::make_shared<metal>(color{0.8, 0.6, 0.2}, 0.0);
 
     world.add(std::make_shared<sphere>(point3{0, -100.5, -1}, 100.0, material_ground));
-    world.add(std::make_shared<sphere>(point3{0, 0, -1}, 0.5, material_center));
     world.add(std::make_shared<sphere>(point3{-1, 0, -1}, 0.5, material_left));
+    world.add(std::make_shared<sphere>(point3{-1, 0, -1}, -0.48, material_left));
+    world.add(std::make_shared<sphere>(point3{-1, 0, -3}, 0.5, material_center));
+    world.add(std::make_shared<sphere>(point3{0, 0, -1}, 0.5, material_center));
     world.add(std::make_shared<sphere>(point3{1, 0, -1}, 0.5, material_right));
 
     // camera
-    camera cam{};
+    camera cam{point3{-2, 2, 1}, point3{0, 0, -1}, Vec3d{0, 1, 0}, 90.0, aspect_ratio};
 
     // Render
     const std::string image_name{"image.ppm"};
@@ -76,7 +79,7 @@ int main() {
         for (int y = image_height - 1; y >= 0; --y) {
             fmt::print("{} scanlines remaining\n", y);
             for (int x = 0; x < image_width; ++x) {
-                slr::color pixel_color{0, 0, 0};
+                color pixel_color{0, 0, 0};
                 for (int s = 0; s < samples_per_pixel; ++s) {
                     const auto u = (x + urd(gen)) / (image_width - 1);
                     const auto v = (y + urd(gen)) / (image_height - 1);

@@ -6,7 +6,7 @@
 class sphere : public hittable {
 public:
     sphere() = default;
-    sphere(slr::point3 center, double radius, std::shared_ptr<material> mat_ptr)
+    sphere(point3 center, double radius, std::shared_ptr<material> mat_ptr)
         : m_center(center), m_radius(radius), m_mat_ptr(mat_ptr) {}
 
     virtual bool hit(
@@ -14,7 +14,7 @@ public:
     ) const override;
 
 private:
-    slr::point3 m_center;
+    point3 m_center;
     double m_radius;
     std::shared_ptr<material> m_mat_ptr;
 };

@@ -2,9 +2,6 @@
 
 #include "math/math.h"
 
-using slr::Vec3d;
-using slr::point3;
-
 class ray {
 public:
     ray() = default;

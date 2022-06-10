@@ -5,12 +5,12 @@
 
 class lambertian : public material {
 public:
-    lambertian(const slr::color& a) : m_albedo(a) {} 
+    lambertian(const color& a) : m_albedo(a) {} 
 
     virtual bool scatter(
-        const ray& r_in, const hit_info& info, slr::color& attenuation, ray& scattered
+        const ray& r_in, const hit_info& info, color& attenuation, ray& scattered
     ) const override {
-        auto scatter_direction = info.normal + slr::random_unit_vector(); 
+        auto scatter_direction = info.normal + random_unit_vector(); 
 
         if (scatter_direction.near_zero()) {
             scatter_direction = info.normal;
@@ -23,5 +23,5 @@ public:
     }
 
 private:
-    slr::color m_albedo;
+    color m_albedo;
 };

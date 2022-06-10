@@ -5,7 +5,7 @@
 class material;
 
 struct hit_info {
-    slr::point3 p;
+    point3 p;
     Vec3d normal;
     std::shared_ptr<material> mat_ptr;
     double t;
