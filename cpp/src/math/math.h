@@ -203,6 +203,14 @@ inline Vec3d random_in_unit_sphere() {
     }
 }
 
+inline Vec3d random_in_unit_disk() {
+    while (true) {
+        const auto p = Vec3d{random_double(-1, 1), random_double(-1, 1), 0};
+        if (p.norm() >= 1) continue;
+        return p;
+    }
+}
+
 inline Vec3d random_unit_vector() {
     return random_in_unit_sphere().normalize();
 }
